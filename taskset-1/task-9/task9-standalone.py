@@ -152,9 +152,9 @@ test_input = np.array(test_input)
 # A: Random forest
 rf_test_prediction = rf_model.predict(test_input)
 rf_rmse = np.sqrt(mean_squared_error(rf_test_prediction, RUL_FD001.values.reshape(-1)))
-print("The RMSE of random forest on test dataset FD001 is ",rf_rmse)
+print("The RMSE of random forest on test dataset FD001 is ", rf_rmse)
 
 # B: Lasso model
 ls_test_prediction = ls_model.predict(test_input)
 ls_rmse = np.sqrt(mean_squared_error(ls_test_prediction, RUL_FD001.values.reshape(-1)))
-print("The RMSE of Lasso model on test dataset FD001 is ",ls_rmse)
+print("The RMSE of Lasso model on test dataset FD001 is ", ls_rmse)
