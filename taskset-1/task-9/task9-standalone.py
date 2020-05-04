@@ -3,6 +3,8 @@
 
 DATA_SET_PATH = "CMAPSSData/"
 
+PLOT_DATA_SET = False
+
 # Import basic packages
 import pandas as pd
 import seaborn as sns
@@ -53,33 +55,36 @@ def add_RUL(col):
 # Calculate RUL for each time point of each engine  
 train_FD001['rul'] = train_FD001[['engine_id', 'cycle']].groupby('engine_id').transform(add_RUL)
 
-# Visualize the RUL curve of some engines (1,2,3,4,5,6)
-g = sns.PairGrid(data=train_FD001.reset_index().query('engine_id < 7'),
-                    x_vars=["index"],
-                    y_vars=['rul'],
-                    hue="engine_id", height=3, aspect=2.5)
+if PLOT_DATA_SET:
+    # Visualize the RUL curve of some engines (1,2,3,4,5,6)
+    g = sns.PairGrid(data=train_FD001.reset_index().query('engine_id < 7'),
+                        x_vars=["index"],
+                        y_vars=['rul'],
+                        hue="engine_id", height=3, aspect=2.5)
 
-g = g.map(plt.plot, alpha=1)
-g = g.add_legend()
+    g = g.map(plt.plot, alpha=1)
+    g = g.add_legend()
 
-# Visualize some sensor curves of some engines 
-g = sns.PairGrid(data=train_FD001.query('engine_id < 5') ,
-                    x_vars=["rul"],
-                    y_vars=['s1','s2'],
-                    hue="engine_id", height=3, aspect=2.5)
+    # Visualize some sensor curves of some engines 
+    g = sns.PairGrid(data=train_FD001.query('engine_id < 5') ,
+                        x_vars=["rul"],
+                        y_vars=['s1','s2'],
+                        hue="engine_id", height=3, aspect=2.5)
 
-g = g.map(plt.plot, alpha=1)
-g = g.add_legend()
+    g = g.map(plt.plot, alpha=1)
+    g = g.add_legend()
 
 # As shown in the figure, some sensors are not related to RUL. 
 # The values of some sensors change with the state of the machine. 
 # Visualization can help filter features
 
 # Distribution of maximum life cycle
-train_FD001[['engine_id', 'rul']].groupby('engine_id').apply(np.max)["rul"].hist(bins=20)
-plt.xlabel("max life cycle")
-plt.ylabel("Count")
-plt.show()
+if PLOT_DATA_SET:
+    train_FD001[['engine_id', 'rul']].groupby('engine_id').apply(np.max)["rul"].hist(bins=20)
+
+    plt.xlabel("max life cycle")
+    plt.ylabel("Count")
+    plt.show()
 
 # Prepare the data and normalization
 train_y = train_FD001['rul']
