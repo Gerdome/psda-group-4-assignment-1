@@ -4,6 +4,7 @@
 DATA_SET_PATH = "CMAPSSData/"
 
 PLOT_DATA_SET = False
+PLOT_MODEL_TRAIN = False
 
 # Import basic packages
 import pandas as pd
@@ -114,9 +115,11 @@ print("Modelling with Random Forest Regressor... (this takes a while)")
 rf_model = RandomForestRegressor()
 rf_model.fit(x,y)
 rf_prediction = rf_model.predict(train_x)
-plt.plot(rf_prediction[:500])
-plt.plot(train_FD001["rul"][:500])
-plt.show()
+
+if PLOT_MODEL_TRAIN:
+    plt.plot(rf_prediction[:500])
+    plt.plot(train_FD001["rul"][:500])
+    plt.show()
 
 print("Modelling with Lasso model...")
 
@@ -124,9 +127,11 @@ print("Modelling with Lasso model...")
 ls_model = LassoCV()
 ls_model.fit(x,y)
 ls_prediction = ls_model.predict(train_x)
-plt.plot(ls_prediction[:500])
-plt.plot(train_FD001["rul"][:500])
-plt.show()
+
+if PLOT_MODEL_TRAIN:
+    plt.plot(ls_prediction[:500])
+    plt.plot(train_FD001["rul"][:500])
+    plt.show()
 
 
 # ...add more models here! Hyper parameter tuning, neural nets etc.
