@@ -74,6 +74,7 @@ if PLOT_DATA_SET:
 
     g = g.map(plt.plot, alpha=1)
     g = g.add_legend()
+    plt.show()
 
 # As shown in the figure, some sensors are not related to RUL. 
 # The values of some sensors change with the state of the machine. 
