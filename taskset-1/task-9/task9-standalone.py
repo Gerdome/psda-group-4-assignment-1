@@ -44,7 +44,7 @@ train_FD001.columns = column_name
 test_FD001 = pd.read_table(Path_to_data + "test_FD001.txt", header=None, delim_whitespace=True)
 test_FD001.columns = column_name
 
-# -> RUL for test data set
+# And: RUL for test data set
 RUL_FD001 = pd.read_table(Path_to_data + "RUL_FD001.txt", header=None, delim_whitespace=True)
 train_FD001.head()
 
