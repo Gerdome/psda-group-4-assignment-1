@@ -53,7 +53,7 @@ def add_RUL(col):
     # It is assumed here that the state of the machine is linearly deteriorating
     return col[::-1]-1
 
-# Calculate RUL for each time point of each engine  
+# Calculate RUL for each time point of each engine from the training data
 train_FD001['rul'] = train_FD001[['engine_id', 'cycle']].groupby('engine_id').transform(add_RUL)
 
 if PLOT_DATA_SET:
