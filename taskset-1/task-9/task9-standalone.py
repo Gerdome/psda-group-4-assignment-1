@@ -123,9 +123,9 @@ rf_prediction = rf_model.predict(train_x)
 
 if PLOT_MODEL_TRAIN:
     plt.plot(rf_prediction[:500], label="Prediction Random Forest Default")
-    plt.plot(train_FD001["rul"][:500], label="Train RUL")
+    # plt.plot(train_FD001["rul"][:500], label="Train RUL")
     plt.legend(loc="upper left")
-    plt.show()
+    # plt.show()
 
 print("Modelling with Lasso model...")
 
