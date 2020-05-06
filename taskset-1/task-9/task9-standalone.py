@@ -34,7 +34,7 @@ from sklearn.metrics import mean_squared_error
 Path_to_data = DATA_SET_PATH
 column_name = ['engine_id', 'cycle', 'setting1', 'setting2', 'setting3', 's1', 's2', 's3',
                 's4', 's5', 's6', 's7', 's8', 's9', 's10', 's11', 's12', 's13', 's14',
-                's15', 's16', 's17', 's18', 's19', 's20', 's21']
+                's15', 's16', 's17', 's18', 's19', 's20', 's21']    # Read moren on this in the suppementray description file I added
 
 # A: Training data set
 train_FD001 = pd.read_table(Path_to_data + "train_FD001.txt", header=None, delim_whitespace=True)
