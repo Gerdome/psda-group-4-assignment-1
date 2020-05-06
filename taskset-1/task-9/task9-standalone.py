@@ -122,8 +122,9 @@ rf_model.fit(x,y)
 rf_prediction = rf_model.predict(train_x)
 
 if PLOT_MODEL_TRAIN:
-    plt.plot(rf_prediction[:500])
-    plt.plot(train_FD001["rul"][:500])
+    plt.plot(rf_prediction[:500], label="Prediction Random Forest Default")
+    plt.plot(train_FD001["rul"][:500], label="Train RUL")
+    plt.legend(loc="upper left")
     plt.show()
 
 print("Modelling with Lasso model...")
@@ -134,8 +135,9 @@ ls_model.fit(x,y)
 ls_prediction = ls_model.predict(train_x)
 
 if PLOT_MODEL_TRAIN:
-    plt.plot(ls_prediction[:500])
-    plt.plot(train_FD001["rul"][:500])
+    plt.plot(ls_prediction[:500], label="Prediction Lasso Default")
+    plt.plot(train_FD001["rul"][:500], label="Train RUL")
+    plt.legend(loc="upper left")
     plt.show()
 
 
