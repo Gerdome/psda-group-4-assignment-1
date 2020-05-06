@@ -106,6 +106,9 @@ from sklearn.utils import shuffle
 x, y = shuffle(train_x, train_y)
 
 
+# ...add more visualization here!
+
+
 # - - - - - - - - - - - - - - - - -
 #            MODELING
 # - - - - - - - - - - - - - - - - -
