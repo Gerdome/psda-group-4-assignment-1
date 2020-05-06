@@ -3,7 +3,7 @@
 
 DATA_SET_PATH = "CMAPSSData/"
 
-PLOT_DATA_SET = False
+PLOT_DATA_SET = True
 PLOT_MODEL_TRAIN = False
 
 # Import basic packages
