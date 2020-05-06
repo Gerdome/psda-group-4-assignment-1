@@ -3,8 +3,8 @@
 
 DATA_SET_PATH = "CMAPSSData/"
 
-PLOT_DATA_SET = True
-PLOT_MODEL_TRAIN = False
+PLOT_DATA_SET = False
+PLOT_MODEL_TRAIN = True
 
 # Import basic packages
 import pandas as pd
@@ -88,6 +88,14 @@ if PLOT_DATA_SET:
     plt.ylabel("Count")
     plt.show()
 
+
+# ...add more visualization here!
+
+
+# - - - - - - - - - - - - - - - - -
+#            MODELING
+# - - - - - - - - - - - - - - - - -
+
 # Prepare the data and normalization
 train_y = train_FD001['rul']
 features = train_FD001.columns.drop(['engine_id', 'cycle', 'rul'])
@@ -105,13 +113,6 @@ test_x = (test_x - mean) / std
 from sklearn.utils import shuffle
 x, y = shuffle(train_x, train_y)
 
-
-# ...add more visualization here!
-
-
-# - - - - - - - - - - - - - - - - -
-#            MODELING
-# - - - - - - - - - - - - - - - - -
 
 print("Modelling with Random Forest Regressor... (this takes a while)")
 
