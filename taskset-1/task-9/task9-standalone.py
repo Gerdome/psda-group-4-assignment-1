@@ -118,6 +118,111 @@ std.replace(0, 1, inplace=True)
 train_x = (train_x - mean) / std
 test_x = (test_x - mean) / std
 
+
+# # Sliding window
+# def slidingWindowSetFromSet(setIn, k):
+#     print(setIn)
+#     setOut = pd.DataFrame(columns=setIn.columns)
+
+#     # Pad using 0 at the beginning if no prior data available
+#     for i in range(len(setIn)):
+#         sw = np.array(k)
+
+#         for j in reversed(range(k)):
+#             if i - j < 0:
+#                 sw.append() # We need 26 dim input data
+#             else:
+#                 sw.append(setIn[setIn.columns][i])
+
+#         setOut.append(sw)
+#         print(setOut)
+
+    # return np.array()
+
+# np.set_printoptions(threshold=np.inf)
+
+# print(train_x)
+
+# k = 1
+# list_of_indexes=[]
+# train_x.index.to_series().rolling(k).apply((lambda x: list_of_indexes.append(x.tolist()) or 0), raw=False)
+
+# d1 = train_x.apply(tuple, axis=1).apply(list)
+# [[print(d1[ix]) for ix in x] for x in list_of_indexes]
+
+# # print(list(d1.loc[2:2][:]))
+
+
+
+# print(d1)
+
+
+def sliding_window_data(df_in, k):
+    df_out = df_in.copy() 
+    df_master_copy = df_in.copy()
+
+    for i in reversed(range(k - 1)):
+        df_copy = df_master_copy.copy()
+
+        to_delete = k - i - 1
+        
+        # Delete last x rows
+        df_copy = df_copy[:-to_delete]
+
+        # Insert x empty rows at the beginning
+        for j in range(to_delete):
+            # df_copy = df_copy.append(pd.Series(0, index=df_copy.columns), ignore_index=False)  # Insert a all-zero row at the start
+            df_copy = df_copy.append(pd.Series(name='0', dtype='float64'))
+            df_copy = df_copy.shift(periods=1)
+            df_copy = df_copy.reset_index(drop=True)
+
+        # Rename columns
+        new_cols = []
+        for col_orig in df_copy.columns:
+            new_cols.append(col_orig + "-tminus" + str(to_delete))
+
+        df_copy.columns = new_cols
+
+        # Append columns to out
+        df_out = df_copy.join(df_out)
+        print(df_copy)
+        print(df_out)
+
+    return df_out
+
+sw = sliding_window_data(train_x, 3)
+print(sw)
+
+exit(1)
+
+
+# train_x_sw = pd.DataFrame(columns=train_x.columns)
+
+# k = 3
+
+# for col in train_x_sw.columns:
+#     data = []
+
+#     print(col)
+
+#     for row in range(len(train_x.index)):
+
+#         value = np.zeros(k)
+#         for i in range(k):
+#             index = row - (k + i)   # index moves from small to big
+#             if index >= 0:
+#                 # value[i] = train_x.loc[index][col]
+#                 pass
+#             # Else: value stays zero
+
+#         # train_x_sw.at[row, col] = value
+
+# print(train_x_sw)
+
+exit(1)
+
+
+# Create training set by shuffling
 from sklearn.utils import shuffle
 x, y = shuffle(train_x, train_y)
 
@@ -267,42 +372,4 @@ print("The RMSE of Lasso model on test dataset FD001 is ", ls_rmse)
 mlp_test_prediction = mlp_model.predict(test_input)
 mlp_rmse = np.sqrt(mean_squared_error(mlp_test_prediction, RUL_FD001.values.reshape(-1)))
 print("The RMSE of MLP model on test dataset FD001 is ", mlp_rmse)
-
-# best = 100000
-# nbest = -1
-
-# for k in range(2, 100):
-#     results = []
-
-#     # Perform 10 times and get average result
-#     for i in range(5):
-#         x, y = shuffle(train_x, train_y)
-
-#         # Train
-#         rf_model = RandomForestRegressor(n_estimators=100, criterion='mse', max_depth=None, min_samples_split=int(k), min_samples_leaf=1, min_weight_fraction_leaf=0.0, max_features='auto', max_leaf_nodes=None, min_impurity_decrease=0.0, min_impurity_split=None, bootstrap=True, oob_score=False, n_jobs=None, random_state=None, verbose=0, warm_start=False, ccp_alpha=0.0, max_samples=None)
-#         rf_model.fit(x,y)
-#         rf_prediction = rf_model.predict(train_x)
-     
-#         # Eval
-#         test_x['engine_id'] = test_FD001['engine_id']
-#         test_input = []
-#         for id in test_x['engine_id'].unique():
-#             test_input.append(test_x[test_x['engine_id']==id].iloc[-1,:-1].values)
-
-#         test_input = np.array(test_input)
-
-#         rf_test_prediction = rf_model.predict(test_input)
-#         rf_rmse = np.sqrt(mean_squared_error(rf_test_prediction, RUL_FD001.values.reshape(-1)))
-#         print("The RMSE of random forest", k, "on test dataset FD001 is ", rf_rmse)
-
-#         results.append(rf_rmse)
-
-#     average = sum(results) / float(len(results))
-#     print("-> Average for n=", k, ":", average)
-
-#     if average < best:
-#         best = average
-#         nbest = k
-
-# print("Best:", nbest, "@", best)
 
