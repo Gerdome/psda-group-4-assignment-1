@@ -175,6 +175,9 @@ def sliding_window_data(df_in, k):
             df_copy = df_copy.shift(periods=1)
             df_copy = df_copy.reset_index(drop=True)
 
+        # Replace NaN with zero
+        df_copy = df_copy.fillna(0)
+        
         # Rename columns
         new_cols = []
         for col_orig in df_copy.columns:
@@ -189,8 +192,8 @@ def sliding_window_data(df_in, k):
 
     return df_out
 
-train_x_sw = sliding_window_data(train_x, 3)
-test_x_sw = sliding_window_data(test_x, 3)
+train_x_sw = sliding_window_data(train_x, 100)
+test_x_sw = sliding_window_data(test_x, 100)
 
 
 # train_x_sw = pd.DataFrame(columns=train_x.columns)
@@ -215,8 +218,6 @@ test_x_sw = sliding_window_data(test_x, 3)
 #         # train_x_sw.at[row, col] = value
 
 # print(train_x_sw)
-
-exit(1)
 
 
 # Create training set by shuffling
@@ -270,7 +271,7 @@ ls_model = LassoCV(alphas=[0.05, 0.2, 0.5, 0.6, 0.8, 1.0, 1.4, 1.8, 2.2, 2.6, 3.
 
 
 ls_model.fit(x,y)
-ls_prediction = ls_model.predict(train_x)
+ls_prediction = ls_model.predict(train_x_sw)
 
 # C: Logistic Regression
 # lr_model = LogisticRegression(random_state=0)
@@ -325,7 +326,7 @@ mlp_model = MLPRegressor(hidden_layer_sizes=(120), activation='relu', solver='ad
 # plt.plot(training_sizes, train_scores)
 
 mlp_model.fit(x,y)
-mlp_prediction = mlp_model.predict(train_x)
+mlp_prediction = mlp_model.predict(train_x_sw)
 
 # loss_values = mlp_model.estimator.loss_curve_
 # plt.plot(loss_values)
