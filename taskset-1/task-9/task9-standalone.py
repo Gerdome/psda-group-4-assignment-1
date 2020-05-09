@@ -171,7 +171,6 @@ def sliding_window_data(df_in, k):
 
         # Insert x empty rows at the beginning
         for j in range(to_delete):
-            # df_copy = df_copy.append(pd.Series(0, index=df_copy.columns), ignore_index=False)  # Insert a all-zero row at the start
             df_copy = df_copy.append(pd.Series(name='0', dtype='float64'))
             df_copy = df_copy.shift(periods=1)
             df_copy = df_copy.reset_index(drop=True)
