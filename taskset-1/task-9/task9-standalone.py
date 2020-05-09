@@ -189,10 +189,8 @@ def sliding_window_data(df_in, k):
 
     return df_out
 
-sw = sliding_window_data(train_x, 3)
-print(sw)
-
-exit(1)
+train_x_sw = sliding_window_data(train_x, 3)
+test_x_sw = sliding_window_data(test_x, 3)
 
 
 # train_x_sw = pd.DataFrame(columns=train_x.columns)
@@ -223,7 +221,7 @@ exit(1)
 
 # Create training set by shuffling
 from sklearn.utils import shuffle
-x, y = shuffle(train_x, train_y)
+x, y = shuffle(train_x_sw, train_y)
 
 
 print("Modelling with Random Forest Regressor... (this takes a while)")
@@ -349,10 +347,10 @@ mlp_prediction = mlp_model.predict(train_x)
 # - - - - - - - - - - - - - - - - -
 
 # Since only the value at one time point is used, it can be seen that a lot of data in the test set is not used
-test_x['engine_id'] = test_FD001['engine_id']
+test_x_sw['engine_id'] = test_FD001['engine_id']
 test_input = []
-for id in test_x['engine_id'].unique():
-    test_input.append(test_x[test_x['engine_id']==id].iloc[-1,:-1].values)
+for id in test_x_sw['engine_id'].unique():
+    test_input.append(test_x_sw[test_x_sw['engine_id']==id].iloc[-1,:-1].values)
 
 test_input = np.array(test_input)
 
