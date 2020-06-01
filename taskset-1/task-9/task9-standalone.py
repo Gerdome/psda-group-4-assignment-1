@@ -187,13 +187,16 @@ def sliding_window_data(df_in, k):
 
         # Append columns to out
         df_out = df_copy.join(df_out)
-        print(df_copy)
-        print(df_out)
+        # print(df_copy)
+        # print(df_out)
 
     return df_out
 
-train_x_sw = sliding_window_data(train_x, 100)
-test_x_sw = sliding_window_data(test_x, 100)
+train_x_sw = sliding_window_data(train_x, 50)
+test_x_sw = sliding_window_data(test_x, 50)
+
+print("-> Shapes of the new data frames:", train_x_sw.shape, test_x_sw.shape)
+
 
 
 # train_x_sw = pd.DataFrame(columns=train_x.columns)
@@ -225,15 +228,15 @@ from sklearn.utils import shuffle
 x, y = shuffle(train_x_sw, train_y)
 
 
-print("Modelling with Random Forest Regressor... (this takes a while)")
+# print("Modelling with Random Forest Regressor... (this takes a while)")
 
-# A: Random Forest with default Hyper parameters
-# tune maxfeatures
-# rf_model = RandomForestRegressor(n_estimators=500, max_features=3)  # 3 was best based on grid search
+# # A: Random Forest with default Hyper parameters
+# # tune maxfeatures
+# rf_model = RandomForestRegressor(n_estimators=500, max_features=40)  # 3 was best based on grid search, 40 for sw-20
 
-# param_grid = {'max_features': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 17, 20, 25, 26, 27, 30, 35, 40]}
+# param_grid = {'max_features': [180, 200, 220]}
 
-# search = GridSearchCV(rf_model, param_grid, scoring='neg_mean_squared_error', cv=5, verbose=5, n_jobs=-1)
+# search = GridSearchCV(rf_model, param_grid, scoring='neg_mean_squared_error', cv=2, verbose=5, n_jobs=-1)
 # search.fit(x,y)
 
 # print("*********************************************************************************")
@@ -244,7 +247,7 @@ print("Modelling with Random Forest Regressor... (this takes a while)")
 # exit(1)
 
 # rf_model.fit(x,y)
-# rf_prediction = rf_model.predict(train_x)
+# rf_prediction = rf_model.predict(train_x_sw)
 
 # if PLOT_MODEL_TRAIN:
 #     plt.plot(rf_prediction[:500], label="Prediction Random Forest Default")
@@ -255,7 +258,8 @@ print("Modelling with Random Forest Regressor... (this takes a while)")
 print("Modelling with Lasso model...")
 
 # B: Lasso model with default Hyper parameters
-ls_model = LassoCV(alphas=[0.05, 0.2, 0.5, 0.6, 0.8, 1.0, 1.4, 1.8, 2.2, 2.6, 3.0, 4.0, 6.0])
+# ls_model = LassoCV(alphas=[0.05, 0.2, 0.5, 0.6, 0.8, 1.0, 1.4, 1.8, 2.2, 2.6, 3.0, 4.0, 6.0])
+ls_model = LassoCV()
 
 # param_grid = {'alpha': [0.05, 0.2, 0.5, 0.6, 0.8, 1.0, 1.4, 1.8, 2.2, 2.6, 3.0, 4.0, 6.0]}
 
@@ -270,8 +274,8 @@ ls_model = LassoCV(alphas=[0.05, 0.2, 0.5, 0.6, 0.8, 1.0, 1.4, 1.8, 2.2, 2.6, 3.
 # exit(1)
 
 
-ls_model.fit(x,y)
-ls_prediction = ls_model.predict(train_x_sw)
+# ls_model.fit(x,y)
+# ls_prediction = ls_model.predict(train_x_sw)
 
 # C: Logistic Regression
 # lr_model = LogisticRegression(random_state=0)
@@ -280,7 +284,7 @@ ls_prediction = ls_model.predict(train_x_sw)
 
 # D: MLP Regressor
 print("Modelling with MLP Regressor... (this takes a while)")
-mlp_model = MLPRegressor(hidden_layer_sizes=(120), activation='relu', solver='adam', alpha=0.001, batch_size='auto', learning_rate='constant', learning_rate_init=0.001, power_t=0.5, max_iter=100, shuffle=True, random_state=4, tol=0.0001, verbose=False, warm_start=False, momentum=0.9, nesterovs_momentum=True, early_stopping=False, validation_fraction=0.1, beta_1=0.9, beta_2=0.999, epsilon=1e-08, n_iter_no_change=10, max_fun=15000)
+mlp_model = MLPRegressor(hidden_layer_sizes=(50,), activation='relu', solver='adam', alpha=0.001, batch_size='auto', learning_rate='constant', learning_rate_init=0.001, power_t=0.5, max_iter=200, shuffle=True, random_state=4, tol=0.0001, verbose=False, warm_start=False, momentum=0.9, nesterovs_momentum=True, early_stopping=False, validation_fraction=0.1, beta_1=0.9, beta_2=0.999, epsilon=1e-08, n_iter_no_change=10, max_fun=15000)
 
 # param_grid = {'hidden_layer_sizes': [100, 200, 300, 500, 750, 1000, 1500, 2000, 2500, 3000]}
 # param_grid = [
@@ -305,28 +309,37 @@ mlp_model = MLPRegressor(hidden_layer_sizes=(120), activation='relu', solver='ad
 #        ]
 
 
+param_grid = [
+    {'hidden_layer_sizes': [800, 1600],
+    'learning_rate_init': [0.01],
+    'max_iter': [200]}
+]
+
 # param_grid = [
-#     {'learning_rate_init': [0.01, 0.001, 0.0001, 0.00001],
-#     'max_iter': [100, 300, 600, 1000]}
+#     {'learning_rate_init': [0.001],
+#     'max_iter': [200],
+#     'hidden_layer_sizes': [(50, 50,), (100, 100,)]
+#     }
 # ]
 
 
 
-# search = GridSearchCV(mlp_model, param_grid, scoring='neg_mean_squared_error', cv=5, verbose=5, n_jobs=-1)
-# search.fit(x,y)
+search = GridSearchCV(mlp_model, param_grid, scoring='neg_mean_squared_error', cv=2, verbose=5, n_jobs=-1)
+search.fit(x,y)
 
-# print("*********************************************************************************")
-# print("*********************************************************************************")
-# print("=== RESULTS ===\n", search.cv_results_)
-# print("=== BEST ===\n", search.best_params_)
+print("*********************************************************************************")
+print("*********************************************************************************")
+print("=== RESULTS ===\n", search.cv_results_)
+print("=== BEST ===\n", search.best_params_)
 
-# exit(1)
+exit(1)
 
 # train_sizes, train_scores, valid_scores = learning_curve(mlp_model, x, y, max_iter=[200, 500, 1000], cv=5)
 # plt.plot(training_sizes, train_scores)
 
-mlp_model.fit(x,y)
-mlp_prediction = mlp_model.predict(train_x_sw)
+# -->
+# mlp_model.fit(x,y)
+# mlp_prediction = mlp_model.predict(train_x_sw)
 
 # loss_values = mlp_model.estimator.loss_curve_
 # plt.plot(loss_values)
@@ -356,9 +369,9 @@ for id in test_x_sw['engine_id'].unique():
 test_input = np.array(test_input)
 
 # # A: Random forest
-# rf_test_prediction = rf_model.predict(test_input)
-# rf_rmse = np.sqrt(mean_squared_error(rf_test_prediction, RUL_FD001.values.reshape(-1)))
-# print("The RMSE of random forest on test dataset FD001 is ", rf_rmse)
+rf_test_prediction = rf_model.predict(test_input)
+rf_rmse = np.sqrt(mean_squared_error(rf_test_prediction, RUL_FD001.values.reshape(-1)))
+print("The RMSE of random forest on test dataset FD001 is ", rf_rmse)
 
 # B: Lasso model
 ls_test_prediction = ls_model.predict(test_input)
@@ -367,7 +380,7 @@ print("The RMSE of Lasso model on test dataset FD001 is ", ls_rmse)
 
 
 # D: MLP
-mlp_test_prediction = mlp_model.predict(test_input)
-mlp_rmse = np.sqrt(mean_squared_error(mlp_test_prediction, RUL_FD001.values.reshape(-1)))
-print("The RMSE of MLP model on test dataset FD001 is ", mlp_rmse)
+# mlp_test_prediction = mlp_model.predict(test_input)
+# mlp_rmse = np.sqrt(mean_squared_error(mlp_test_prediction, RUL_FD001.values.reshape(-1)))
+# print("The RMSE of MLP model on test dataset FD001 is ", mlp_rmse)
 
